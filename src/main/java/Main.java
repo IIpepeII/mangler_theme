@@ -1,4 +1,5 @@
 import controller.Controller;
+import db_con.DatabaseController;
 import db_con.JDBCConnection;
 import spark.ModelAndView;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
@@ -13,7 +14,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static spark.Spark.*;
@@ -59,14 +62,22 @@ public class Main {
         });
 
         post("/upload", (req, res) -> {
-            Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+            Path tempFile = Files.createTempFile(uploadDir.toPath(),  "", "");
             req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
             try (InputStream input = req.raw().getPart("uploaded_file").getInputStream()) { // getPart needs to use same "name" as input field in form
                 Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
             }
-            for(String n:req.queryParams()){
-                System.out.println(n);
+            List<String> postParams = new ArrayList<>();
+            postParams.add(tempFile.toString());
+            postParams.add(req.queryParams("theme"));
+            postParams.add(req.queryParams("hun"));
+            postParams.add(req.queryParams("eng"));
+            for(String n:postParams){
+                System.out.println(n + " ");
             }
+            DatabaseController dBase = new DatabaseController();
+            dBase.addNewWordCard(postParams);
+
             return "<h1>You uploaded this image:<h1><img src='" + tempFile.getFileName() + "'>";
         });
 
