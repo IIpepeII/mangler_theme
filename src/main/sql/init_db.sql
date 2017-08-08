@@ -11,6 +11,10 @@ CREATE TABLE wuser (
 
 CREATE TABLE word_card (
   id       INT,
+  pic_location VARCHAR(50),
+  theme VARCHAR(50),
+  hung VARCHAR(100),
+  engl VARCHAR(100),
   wuser_id INT,
   INDEX par_ind (wuser_id),
   FOREIGN KEY (wuser_id)
