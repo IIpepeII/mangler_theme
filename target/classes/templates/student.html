@@ -1,0 +1,24 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head th:include="header :: head">
+</head>
+<body>
+<div th:include="navbar :: navbar"></div>
+
+<div class="jumbotron">
+    <div id="themes-group" class="btn-group">
+        <button id="history-button" type="button" class="btn btn-primary">History</button>
+        <button id="nature-button" type="button" class="btn btn-primary">Nature</button>
+        <button id="hungary-button" type="button" class="btn btn-primary">Hungary</button>
+        <button id="traffic-button" type="button" class="btn btn-primary">Traffic</button>
+        <button id="exam-button" type="button" class="btn btn-primary">Exam</button>
+    </div>
+</div>
+<div id="get-card-button-container" class="container">
+    <button style="display: none" id="get-card" class="btn btn-primary btn-lg">Get Card</button>
+</div>
+<div id="card-image-container" class="container">
+    <img id="card-image" src="#"/>
+</div>
+</body>
+</html>

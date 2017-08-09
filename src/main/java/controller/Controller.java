@@ -19,7 +19,7 @@ import static spark.Spark.halt;
 
 public class Controller {
 
-    public static void deleteFile() {
+    public static Response deleteFile() {
 
         try {
             //Example file
@@ -37,7 +37,7 @@ public class Controller {
 
         }
 
-
+return null;
     }
 }
 

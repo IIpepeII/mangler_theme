@@ -1,5 +1,11 @@
 package db_con;
 
+import com.google.gson.Gson;
+import model.WordCard;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +39,7 @@ public class DatabaseController {
 
     public void addNewWordCard(List<String> cardDetails) {
 
-        String insertIntoTable = "INSERT INTO word_card (pic_location, theme, hung,engl) VALUES (?,?,?,?);";
+        String insertIntoTable = "INSERT INTO word_card (pic_location, theme, hun, eng) VALUES (?,?,?,?);";
 
         try {
             // Adding record to DB
@@ -46,32 +52,43 @@ public class DatabaseController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 
-    public void remove(int id, String table) {
-        String removeFromTable = "";
-        switch (table) {
-            case "Product":
-                removeFromTable = "DELETE FROM product WHERE id = ?;";
-                break;
+    public List<WordCard> getAll() throws JSONException {
+        String query = "SELECT * FROM word_card";
+        List<WordCard> wordCardList = cardFactory(query);
+        return wordCardList;
+    }
 
-            case "ProductCategory":
-                removeFromTable = "DELETE FROM productcategory WHERE id = ?;";
-                break;
+    public List<WordCard> getExamCards(){
+        String query = "SELECT * FROM word_card\n" +
+                "ORDER BY RAND()\n" +
+                "LIMIT 10";
+        List<WordCard> wordCardList = cardFactory(query);
+        return wordCardList;
+    }
 
-            case "Supplier":
-                removeFromTable = "DELETE FROM supplier WHERE id = ?;";
-                break;
-        }
+    private List<WordCard> cardFactory(String query){
+
+        List<WordCard> wordCardList = new ArrayList<>();
         try {
-            preparedStatement = dbConnection.prepareStatement(removeFromTable);
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeQuery();
-        } catch (Exception e) {
-            e.getStackTrace();
+            preparedStatement = dbConnection.prepareStatement(query,
+                    ResultSet.TYPE_FORWARD_ONLY,
+                    ResultSet.CONCUR_READ_ONLY,
+                    ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                WordCard wordCard = new WordCard(result.getInt("id"),
+                        result.getString("pic_location"),
+                        result.getString("theme"),
+                        result.getString("hun"),
+                        result.getString("eng"));
+                wordCardList.add(wordCard);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return wordCardList;
     }
 }
 
