@@ -1,10 +1,7 @@
 package db_con;
 
-import com.google.gson.Gson;
 import model.WordCard;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -55,34 +52,58 @@ public class DatabaseController {
     }
 
     public List<WordCard> getAll() throws JSONException {
+
         String query = "SELECT * FROM word_card";
-        List<WordCard> wordCardList = cardFactory(query);
-        return wordCardList;
+        return queryToPreparedStatement(query);
     }
 
-    public List<WordCard> getExamCards(){
-        String query = "SELECT * FROM word_card\n" +
-                "ORDER BY RAND()\n" +
-                "LIMIT 10";
-        List<WordCard> wordCardList = cardFactory(query);
-        return wordCardList;
-    }
-
-    private List<WordCard> cardFactory(String query){
-
-        List<WordCard> wordCardList = new ArrayList<>();
+    private List<WordCard> queryToPreparedStatement(String query) {
         try {
             preparedStatement = dbConnection.prepareStatement(query,
                     ResultSet.TYPE_FORWARD_ONLY,
                     ResultSet.CONCUR_READ_ONLY,
                     ResultSet.CLOSE_CURSORS_AT_COMMIT);
             ResultSet result = preparedStatement.executeQuery();
+            return cardFactory(result);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<WordCard> getExamCards() {
+        String query = "SELECT * FROM word_card\n" +
+                "ORDER BY RAND()\n" +
+                "LIMIT 10";
+        return queryToPreparedStatement(query);
+    }
+
+    public List<WordCard> getCardsByTheme(String theme) {
+
+        String query = "SELECT * FROM word_card WHERE theme = ? ORDER BY RAND() LIMIT 10";
+        try {
+            preparedStatement = dbConnection.prepareStatement(query,
+                    ResultSet.TYPE_FORWARD_ONLY,
+                    ResultSet.CONCUR_READ_ONLY,
+                    ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            preparedStatement.setString(1, theme);
+            ResultSet result = preparedStatement.executeQuery();
+            return cardFactory(result);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private List<WordCard> cardFactory(ResultSet result) {
+        List<WordCard> wordCardList = new ArrayList<>();
+        try {
             while (result.next()) {
                 WordCard wordCard = new WordCard(result.getInt("id"),
                         result.getString("pic_location"),
                         result.getString("theme"),
-                        result.getString("hun"),
-                        result.getString("eng"));
+                        result.getString("eng"),
+                        result.getString("hun"));
                 wordCardList.add(wordCard);
             }
         } catch (SQLException e) {
@@ -90,6 +111,7 @@ public class DatabaseController {
         }
         return wordCardList;
     }
+
 }
 
 

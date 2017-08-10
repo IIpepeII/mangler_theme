@@ -29,14 +29,12 @@ public class Main {
 
 
     public static void main(String[] args) {
-
-        Controller.deleteFile();
-
-        JDBCConnection.connectProps();
+        externalStaticFileLocation("src/main/resources/public/img/");
+        staticFileLocation("/public");
         File uploadDir = new File("src/main/resources/public/img/");
         uploadDir.mkdir(); // create the upload directory if it doesn't exist
+        DatabaseController dBase = new DatabaseController();
         exception(Exception.class, (e, req, res) -> e.printStackTrace());
-        staticFileLocation("/public");
         port(8888);
 
         // populate some data for the memory storage
@@ -45,14 +43,7 @@ public class Main {
         get("/", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             return new ThymeleafTemplateEngine().render(
-                    new ModelAndView(model, "index")
-            );
-        });
-
-        get("/exam", (req, res) -> {
-            Map<String, Object> model = new HashMap<>();
-            return new ThymeleafTemplateEngine().render(
-                    new ModelAndView(model, "exam")
+                    new ModelAndView(model, "student")
             );
         });
 
@@ -78,26 +69,33 @@ public class Main {
         });
 
         get("/wordcards", (res, req) -> {
-            DatabaseController dBase = new DatabaseController();
             Gson json = new Gson();
-            System.out.println(json.toJson(dBase.getAll()));
             return json.toJson(dBase.getAll());
         });
 
         get("/exam_cards", (req, res) -> {
-            DatabaseController dBase = new DatabaseController();
             Gson json = new Gson();
             Wuser wuser =  new Wuser();
             req.session().attribute("user",wuser);
             wuser.setCards(dBase.getExamCards());
-            System.out.println(json.toJson(dBase.getExamCards()));
-            System.out.println(req.session().attributes());
+            return json.toJson(wuser.getCards());
+        });
+
+        post("/exercise", (req, res) -> {
+            Gson json = new Gson();
+            Wuser wuser =  new Wuser();
+            String theme = req.queryParams("theme");
+            req.session().attribute("user",wuser);
+            wuser.setCards(dBase.getCardsByTheme(theme));
             return json.toJson(wuser.getCards());
         });
 
         get("/getcard", (req,res) -> {
            Wuser wuser = req.session().attribute("user");
            Gson json = new Gson();
+           if(wuser.isLastIndex()){
+               return json.toJson("OK");
+           }
            return json.toJson(wuser.getCard());
         });
 
@@ -113,7 +111,6 @@ public class Main {
             postParams.add(req.queryParams("theme"));
             postParams.add(req.queryParams("hun"));
             postParams.add(req.queryParams("eng"));
-            DatabaseController dBase = new DatabaseController();
             dBase.addNewWordCard(postParams);
 
             res.redirect("/teacher");

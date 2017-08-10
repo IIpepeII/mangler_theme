@@ -6,19 +6,35 @@
 <div th:include="navbar :: navbar"></div>
 
 <div class="jumbotron">
+
     <div id="themes-group" class="btn-group">
-        <button id="history-button" type="button" class="btn btn-primary">History</button>
-        <button id="nature-button" type="button" class="btn btn-primary">Nature</button>
-        <button id="hungary-button" type="button" class="btn btn-primary">Hungary</button>
-        <button id="traffic-button" type="button" class="btn btn-primary">Traffic</button>
-        <button id="exam-button" type="button" class="btn btn-primary">Exam</button>
+        <h3>Exercise:</h3>
+        <button id="nature" type="button" class="exercise-button btn btn-default">Nature</button>
+        <button id="food" type="button" class="exercise-button btn btn-default">Food</button>
+        <button id="traffic" type="button" class="exercise-button btn btn-default">Traffic</button>
+    </div>
+    <div>
+        <button id="exam-button" type="button" class="btn btn-primary btn-lg">Exam</button>
     </div>
 </div>
 <div id="get-card-button-container" class="container">
-    <button style="display: none" id="get-card" class="btn btn-primary btn-lg">Get Card</button>
 </div>
-<div id="card-image-container" class="container">
-    <img id="card-image" src="#"/>
+<div id="card-image-container" class="container" style="display: none">
+    <img id="card-image" src="#" border="5"/>
+    <form method="POST" enctype="multipart/form-data" action="upload">
+        <div>
+            <h3>magyar/english</h3>
+            <input type="text" name="hun"><br></br></input>
+        </div>
+        <div>
+            <h3>english/angol:</h3>
+            <input type="text" name="eng"><br></br></input>
+        </div>
+        <!-- <input id="evaluation-button" type="submit" class="btn btn-primary btn-lg" value="Evaluation - Kiértékelés"></input> -->
+    </form>
+    <div>
+        <button style="display: none" id="get-card" class="btn btn-primary btn-lg">Next</button>
+    </div>
 </div>
 </body>
 </html>

@@ -45,7 +45,8 @@ $(document).ready(function () {
             type: "GET",
             async: true,
             success: function (resp) {
-                alert(resp);
+                getCard();
+                $("#card-image-container").hide();
                 $("#get-card").removeAttr("style");
             },
             error: function () {
@@ -55,19 +56,44 @@ $(document).ready(function () {
     });
 
     $("#get-card").click( function () {
+        getCard()
+    });
+
+    $(".exercise-button").click(function () {
+        var theme = $(this).attr("id");
         $.ajax({
-            url: "/getcard",
-            type: "GET",
+            url: "/exercise",
+            type: "POST",
             async: true,
+            data:{ theme : theme } ,
             success: function (resp) {
-                alert(resp);
-                var n = JSON.parse(resp);
-                $('#card-image').attr("src", n["picLocation"]);
-                alert(n["picLocation"]);
+                getCard();
+                $("#card-image-container").hide();
+                $("#get-card").removeAttr("style");
             },
             error: function () {
                 alert('Problem with function')
             }
         });
     });
+
+    function getCard() {
+        $.ajax({
+            url: "/getcard",
+            type: "GET",
+            async: true,
+            success: function (resp) {
+                var n = JSON.parse(resp);
+                if(!(n.hasOwnProperty("id"))){
+                    $('#card-image-container').hide();
+                }else {
+                    $('#card-image-container').removeAttr('style');
+                    $('#card-image').attr("src", n["picLocation"]);
+                }
+            },
+            error: function () {
+                alert('Problem with function')
+            }
+        });
+    }
 });

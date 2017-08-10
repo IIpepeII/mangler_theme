@@ -36,4 +36,12 @@ public class Wuser {
         System.out.println(currentIndex);
             return cards.get(currentIndex);
     }
+
+    public int getCardListSize() {
+        return cardListSize;
+    }
+
+    public boolean isLastIndex(){
+        return currentCard == cardListSize;
+    }
 }

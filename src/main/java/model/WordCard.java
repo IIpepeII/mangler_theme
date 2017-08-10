@@ -13,7 +13,7 @@ public class WordCard {
         this.picLocation = picLocation;
         this.theme = theme;
         this.eng = eng;
-        this.eng = eng;
+        this.hun = hun;
     }
 
     public String getPicLocation() {
