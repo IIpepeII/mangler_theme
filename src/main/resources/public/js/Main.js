@@ -87,8 +87,8 @@ $(document).ready(function () {
                 if(!(n.hasOwnProperty("id"))){
                     $('#card-image-container').hide();
                 }else {
+                    getImage(n);
                     $('#card-image-container').removeAttr('style');
-                    $('#card-image').attr("src", n["picLocation"]);
                 }
             },
             error: function () {
@@ -96,4 +96,35 @@ $(document).ready(function () {
             }
         });
     }
+
+    function getImage(obj) {
+        $.ajax({
+            url: "/getimage",
+            type: "POST",
+            data: {picLocation: obj["picLocation"]},
+            async: true,
+            success: function (resp) {
+                $('#card-image').attr("src", resp);
+                },
+            error: function () {
+                alert('Problem with function')
+            }
+        });
+    }
+
+    function evaluate(hun,eng) {
+        $.ajax({
+            url: "/evaluate",
+            type: "POST",
+            data: {hun: hun, eng:eng},
+            async: true,
+            success: function (resp) {
+            },
+            error: function () {
+                alert('Problem with function')
+            }
+        });
+    }
+
+
 });

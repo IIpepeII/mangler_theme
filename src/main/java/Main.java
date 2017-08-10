@@ -2,6 +2,7 @@ import com.google.gson.Gson;
 
 import controller.Controller;
 
+import controller.ImageReader;
 import db_con.DatabaseController;
 import db_con.JDBCConnection;
 
@@ -12,8 +13,7 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
 import javax.servlet.MultipartConfigElement;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -97,6 +97,11 @@ public class Main {
                return json.toJson("OK");
            }
            return json.toJson(wuser.getCard());
+        });
+
+        post("/getimage", (req,res) -> {
+            String picLocation = req.queryParams("picLocation");
+            return ImageReader.base64image(picLocation);
         });
 
         post("/upload", (req, res) -> {

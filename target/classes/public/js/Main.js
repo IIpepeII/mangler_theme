@@ -87,10 +87,25 @@ $(document).ready(function () {
                 if(!(n.hasOwnProperty("id"))){
                     $('#card-image-container').hide();
                 }else {
+                    getImage(n);
                     $('#card-image-container').removeAttr('style');
-                    $('#card-image').attr("src", n["picLocation"]);
                 }
             },
+            error: function () {
+                alert('Problem with function')
+            }
+        });
+    }
+
+    function getImage(obj) {
+        $.ajax({
+            url: "/getimage",
+            type: "POST",
+            data: {picLocation: obj["picLocation"]},
+            async: true,
+            success: function (resp) {
+                $('#card-image').attr("src", resp);
+                },
             error: function () {
                 alert('Problem with function')
             }
