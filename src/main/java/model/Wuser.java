@@ -7,10 +7,10 @@ public class Wuser {
     private int id;
     private String first_name;
     private String last_name;
-    private List<String> results;
+    private int result = 0;
     private List<WordCard> cards;
     private int cardListSize;
-    private int currentCard = 0;
+    private int currentCardIndex = 0;
 
     public Wuser(){}
 
@@ -30,11 +30,20 @@ public class Wuser {
     }
 
     public WordCard getCard(){
-        System.out.println(currentCard);
-        int currentIndex = currentCard;
-        currentCard++;
+        int currentIndex = currentCardIndex;
+        currentCardIndex++;
         System.out.println(currentIndex);
             return cards.get(currentIndex);
+    }
+
+    public boolean evalCard(String hun, String eng){
+        WordCard card = cards.get(currentCardIndex-1);
+        return card.getHun().equals(hun) && card.getEng().equals(eng);
+    }
+
+    public boolean  evalCardWithIndexZero(String hun, String eng){
+        WordCard card = cards.get(0);
+        return card.getHun().equals(hun) && card.getEng().equals(eng);
     }
 
     public int getCardListSize() {
@@ -42,6 +51,27 @@ public class Wuser {
     }
 
     public boolean isLastIndex(){
-        return currentCard == cardListSize;
+        return currentCardIndex == cardListSize;
+    }
+
+    public int getResult() {
+        System.out.println("Eredmény: " + result);
+        return result;
+    }
+
+    public void setResultToZero(){
+        result = 0;
+    }
+
+    public void setCurrentCardIndexToZero(){
+        currentCardIndex = 0;
+    }
+    
+    public int getCurrentIndex(){
+        return currentCardIndex;
+    }
+
+    public void setResult() {
+        result++;
     }
 }

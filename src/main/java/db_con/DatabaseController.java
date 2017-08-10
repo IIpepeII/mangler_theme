@@ -1,5 +1,6 @@
 package db_con;
 
+import model.Result;
 import model.WordCard;
 import org.json.JSONException;
 
@@ -50,11 +51,69 @@ public class DatabaseController {
             e.printStackTrace();
         }
     }
+    public void addNewResult(String firstName, String lastName, String result) {
 
-    public List<WordCard> getAll() throws JSONException {
+        String insertIntoTable = "INSERT INTO result (first_name, last_name, result) VALUES (?,?,?);";
+
+        try {
+            // Adding record to DB
+            preparedStatement = dbConnection.prepareStatement(insertIntoTable);
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(3, result);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<WordCard> getAllWordCards() throws JSONException {
 
         String query = "SELECT * FROM word_card";
         return queryToPreparedStatement(query);
+    }
+
+    public List<Result> getAllResults() throws JSONException {
+
+        String query = "SELECT * FROM result";
+        return queryToPreparedStatementForResults(query);
+    }
+
+    public void delResult(Integer id){
+        String query = "DELETE FROM result WHERE id= ?;";
+        deleteRowById(id,query);
+    }
+
+    public void delWordCard(Integer id){
+        String query = "DELETE FROM word_card WHERE id= ?;";
+        deleteRowById(id,query);
+    }
+
+    private void deleteRowById(Integer id, String query){
+        try {
+            preparedStatement = dbConnection.prepareStatement(query,
+                    ResultSet.TYPE_FORWARD_ONLY,
+                    ResultSet.CONCUR_READ_ONLY,
+                    ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<Result> queryToPreparedStatementForResults(String query) {
+        try {
+            preparedStatement = dbConnection.prepareStatement(query,
+                    ResultSet.TYPE_FORWARD_ONLY,
+                    ResultSet.CONCUR_READ_ONLY,
+                    ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            ResultSet result = preparedStatement.executeQuery();
+            return resultFactory(result);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private List<WordCard> queryToPreparedStatement(String query) {
@@ -110,6 +169,22 @@ public class DatabaseController {
             e.printStackTrace();
         }
         return wordCardList;
+    }
+
+    private List<Result> resultFactory(ResultSet result) {
+        List<Result> resultList = new ArrayList<>();
+        try {
+            while (result.next()) {
+                Result newResult = new Result(result.getInt("id"),
+                        result.getString("first_name"),
+                        result.getString("last_name"),
+                        result.getInt("result"));
+                resultList.add(newResult);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultList;
     }
 
 }

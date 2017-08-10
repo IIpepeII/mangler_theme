@@ -1,14 +1,5 @@
 DROP TABLE IF EXISTS word_card;
 DROP TABLE IF EXISTS result;
-DROP TABLE IF EXISTS wuser;
-
-CREATE TABLE wuser (
-  id   INT  NOT NULL AUTO_INCREMENT,
-  first_name VARCHAR(255),
-  last_name VARCHAR(255),
-  PRIMARY KEY (id)
-)
-  ENGINE = INNODB;
 
 CREATE TABLE word_card (
   id       INT  NOT NULL AUTO_INCREMENT,
@@ -22,6 +13,8 @@ CREATE TABLE word_card (
 
 CREATE TABLE result (
   id       INT  NOT NULL AUTO_INCREMENT,
+  first_name VARCHAR(255),
+  last_name VARCHAR(255),
   result   INT,
   PRIMARY KEY (id)
 )

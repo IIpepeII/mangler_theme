@@ -11,7 +11,7 @@ th {
     border-style: dashed !important;
 }
 
-.del-button{
+.del-wordcard-button , .del-result-button{
     width: 100%;
 }
 
@@ -23,16 +23,20 @@ th {
     text-align: center;
 }
 
-#themes-group, #exam-button{
+#themes-group, #result-container{
     margin-left: 50px;
-
 }
+
 #themes-group{
     margin-top: 10px;
 }
 
-#exam-button{
+#result-container{
     margin-top: 30px;
+}
+
+#teacher-button-group{
+    margin-bottom: 30px;
 }
 
 #card-image-container{
@@ -50,4 +54,8 @@ th {
 
 #get-card{
     margin: 30px;
+}
+
+#result-points{
+    color: cornflowerblue;
 }

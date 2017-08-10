@@ -1,45 +1,15 @@
 $(document).ready(function () {
 
-    $("#wordcards").click(function () {
-        $.ajax({
-            url: "/wordcards",
-            type: "GET",
-            async: true,
-            success: function (resp) {
-                var n = JSON.parse(resp);
-                var delButton = "<button type='button' class='del-button glyphicon glyphicon-remove-sign'></button>";
-                $("#big-table").removeAttr("style");
-                $("#big-table").html(
-                    "<tr><th>ID</th>" +
-                    "<th>File</th>" +
-                    "<th>Theme</th>" +
-                    "<th>HUN</th>" +
-                    "<th>EN</th>" +
-                    "<th>Remove</th>" +
-                    "</tr>");
-                for (var i = 0; i < n.length; i++) {
-                    var obj = n[i];
-                    var id = obj["id"]
-                    var picLoc = obj["picLocation"];
-                    var theme = obj["theme"];
-                    var hun = obj["hun"];
-                    var eng = obj["eng"];
-                    $("#big-table").append(
-                        "<tr><td>" + id + "</td>" +
-                        "<td>" + picLoc + "</td>" +
-                        "<td>" + theme + "</td>" +
-                        "<td>" + hun + "</td>" +
-                        "<td>" + eng + "</td>" +
-                        "<td>" + delButton + "</td></tr>"
-                    );
-                }
-            },
-            error: function () {
-                alert('Problem with function')
-            }
-        });
+    $("#wordcards-button").click(function () {
+        getWordCards();
     });
+
+    $("#results-button").click(function () {
+        getResults();
+    });
+
     $("#exam-button").click(function () {
+        resultToZero();
         $.ajax({
             url: "/exam_cards",
             type: "GET",
@@ -50,7 +20,7 @@ $(document).ready(function () {
                 $("#get-card").removeAttr("style");
             },
             error: function () {
-                alert('Problem with function')
+                alert('Problem with function: exam-button.click')
             }
         });
     });
@@ -60,6 +30,7 @@ $(document).ready(function () {
     });
 
     $(".exercise-button").click(function () {
+        resultToZero();
         var theme = $(this).attr("id");
         $.ajax({
             url: "/exercise",
@@ -72,12 +43,15 @@ $(document).ready(function () {
                 $("#get-card").removeAttr("style");
             },
             error: function () {
-                alert('Problem with function')
+                alert('Problem with function: exercize-button.click')
             }
         });
     });
 
     function getCard() {
+        var hun = $("#hun-student-input").val();
+        var eng = $("#eng-student-input").val();
+        evaluate(hun,eng);
         $.ajax({
             url: "/getcard",
             type: "GET",
@@ -85,14 +59,16 @@ $(document).ready(function () {
             success: function (resp) {
                 var n = JSON.parse(resp);
                 if(!(n.hasOwnProperty("id"))){
+                    getResult();
                     $('#card-image-container').hide();
                 }else {
                     getImage(n);
+
                     $('#card-image-container').removeAttr('style');
                 }
             },
             error: function () {
-                alert('Problem with function')
+                alert('Problem with function: getCard')
             }
         });
     }
@@ -107,8 +83,160 @@ $(document).ready(function () {
                 $('#card-image').attr("src", resp);
                 },
             error: function () {
-                alert('Problem with function')
+                alert('Problem with function: getImage')
             }
         });
     }
+
+    function evaluate(hun,eng) {
+        $.ajax({
+            url: "/evaluate",
+            type: "POST",
+            data: {hun: hun, eng:eng},
+            async: true,
+            error: function () {
+                alert('Problem with function: evaluate')
+            }
+        });
+    }
+
+    function resultToZero() {
+        $.ajax({
+            url: "/result_to_zero",
+            type: "GET",
+            async: true,
+            error: function () {
+                alert('Problem with function: resultToZero')
+            }
+        });
+    }
+
+    function getResult() {
+        $.ajax({
+            url: "/get_result",
+            type: "GET",
+            async: true,
+            success: function (resp) {
+                $('#result-container').removeAttr("style");
+                $('#result-points').html(" 10/" + resp);
+            },
+            error: function (resp) {
+                alert('Problem with function: getResult')
+            }
+        });
+    }
+
+    $("#lists").on("click",".del-wordcard-button", function () {
+        var ItemIndex = $(this).attr("value");
+        $.ajax({
+            url: "/del_wordcard",
+            type: "POST",
+            data: { id: ItemIndex },
+            async: true,
+            success: function (resp) {
+                getWordCards();
+            },
+            error: function () {
+                alert('Problem with function: resultToZero')
+            }
+        });
+    });
+
+    $("#lists").on("click",".del-result-button", function () {
+        var ItemIndex = $(this).attr("value");
+        $.ajax({
+            url: "/del_result",
+            type: "POST",
+            data: { id: ItemIndex },
+            async: true,
+            success: function (resp) {
+                getResults();
+            },
+            error: function () {
+                alert('Problem with function: resultToZero')
+            }
+        });
+    });
+
+    function getWordCards() {
+        $.ajax({
+            url: "/wordcards",
+            type: "GET",
+            async: true,
+            success: function (resp) {
+                var n = JSON.parse(resp);
+                $("#big-table").removeAttr("style");
+                $("#big-table").html(
+                    "<tr><th>ID</th>" +
+                    "<th>File</th>" +
+                    "<th>Theme</th>" +
+                    "<th>HUN</th>" +
+                    "<th>EN</th>" +
+                    "<th>Remove</th>" +
+                    "</tr>");
+                for (var i = 0; i < n.length; i++) {
+                    var obj = n[i];
+                    var id = obj["id"];
+                    var picLoc = obj["picLocation"];
+                    var theme = obj["theme"];
+                    var hun = obj["hun"];
+                    var eng = obj["eng"];
+                    var delButton = "<button value='" + obj["id"] +  "' type='button' class='del-wordcard-button glyphicon glyphicon-remove-sign'></button>";
+                    $("#big-table").append(
+                        "<tr><td>" + id + "</td>" +
+                        "<td>" + picLoc + "</td>" +
+                        "<td>" + theme + "</td>" +
+                        "<td>" + hun + "</td>" +
+                        "<td>" + eng + "</td>" +
+                        "<td>" + delButton + "</td></tr>"
+                    );
+                }
+            },
+            error: function () {
+                alert('Problem with function: getWordCards')
+            }
+        });
+    }
+
+    function getResults() {
+        $.ajax({
+            url: "/results",
+            type: "GET",
+            async: true,
+            success: function (resp) {
+                var n = JSON.parse(resp);
+                $("#big-table").removeAttr("style");
+                $("#big-table").html(
+                    "<tr><th>ID</th>" +
+                    "<th>First Name</th>" +
+                    "<th>Last Name</th>" +
+                    "<th>Result</th>" +
+                    "<th>Remove</th>" +
+                    "</tr>");
+                for (var i = 0; i < n.length; i++) {
+                    var obj = n[i];
+                    var id = obj["id"];
+                    var firstName = obj["firstName"];
+                    var lastName = obj["lastName"];
+                    var result = obj["result"];
+                    var delButton = "<button value='" + obj["id"] +  "' type='button' class='del-result-button glyphicon glyphicon-remove-sign'></button>";
+                    $("#big-table").append(
+                        "<tr><td>" + id + "</td>" +
+                        "<td>" + firstName + "</td>" +
+                        "<td>" + lastName + "</td>" +
+                        "<td>" + result + "%</td>" +
+                        "<td>" + delButton + "</td></tr>"
+                    );
+                }
+            },
+            error: function () {
+                alert('Problem with function: getResults');
+            }
+        });
+    }
+
+
+
+
+
 });
