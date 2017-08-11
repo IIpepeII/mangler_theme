@@ -20,14 +20,23 @@ import static spark.Spark.*;
 
 public class Main {
 
+    static int getHerokuAssignedPort() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        if (processBuilder.environment().get("PORT") != null) {
+            return Integer.parseInt(processBuilder.environment().get("PORT"));
+        }
+        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
+    }
+
     public static void main(String[] args) {
-        externalStaticFileLocation("src/main/resources/public/img/");
+        externalStaticFileLocation("upload");
         staticFileLocation("/public");
-        File uploadDir = new File("src/main/resources/public/img/");
+        File uploadDir = new File("upload");
         uploadDir.mkdir(); // create the upload directory if it doesn't exist
         DatabaseController dBase = new DatabaseController();
         exception(Exception.class, (e, req, res) -> e.printStackTrace());
-        port(8888);
+        //port(8888);
+        port(getHerokuAssignedPort());
 
         get("/", (req, res) -> {
             req.session().attribute("user", new Wuser());
@@ -153,7 +162,7 @@ public class Main {
                 Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
             }
             List<String> postParams = new ArrayList<>();
-            String fileName = tempFile.toString().replace("src/main/resources/public", "");
+            String fileName = tempFile.toString();
             postParams.add(fileName);
             postParams.add(req.queryParams("theme"));
             postParams.add(req.queryParams("hun"));

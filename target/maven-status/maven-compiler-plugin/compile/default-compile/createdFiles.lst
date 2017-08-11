@@ -1,0 +1,8 @@
+controller/ImageReader.class
+model/Result.class
+Main.class
+model/Wuser.class
+db_con/DatabaseController.class
+model/WordCard.class
+db_con/JDBCConnection.class
+controller/Controller.class
