@@ -1,24 +1,21 @@
 package model;
 
+import controller.Controller;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class Wuser {
 
-    private int id;
-    private String first_name;
-    private String last_name;
     private int result = 0;
     private List<WordCard> cards;
     private int cardListSize;
     private int currentCardIndex = 0;
+    private String startTime;
+    private String endTime;
 
     public Wuser(){}
-
-    public Wuser(int id, String first_name, String last_name){
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
-    }
 
     public List<WordCard> getCards() {
         return cards;
@@ -32,7 +29,6 @@ public class Wuser {
     public WordCard getCard(){
         int currentIndex = currentCardIndex;
         currentCardIndex++;
-        System.out.println(currentIndex);
             return cards.get(currentIndex);
     }
 
@@ -55,7 +51,6 @@ public class Wuser {
     }
 
     public int getResult() {
-        System.out.println("Eredmény: " + result);
         return result;
     }
 
@@ -74,4 +69,21 @@ public class Wuser {
     public void setResult() {
         result++;
     }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime() {
+        this.startTime = Controller.getCurrentTime();
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime() {
+        this.endTime = Controller.getCurrentTime();
+    }
+
 }

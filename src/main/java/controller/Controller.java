@@ -11,6 +11,8 @@ import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,10 @@ import java.util.Map;
 import static spark.Spark.halt;
 
 public class Controller {
+
+    public static String getCurrentTime(){
+        return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
+    }
 
     public static Response deleteFile() {
 

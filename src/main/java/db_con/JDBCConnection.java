@@ -12,7 +12,7 @@ public class JDBCConnection {
         Properties prop = new Properties();
         InputStream input = null;
         ArrayList<String> proplist = new ArrayList<>();
-        String pathToDB = "src/main/sql/properties.txt";
+        String pathToDB = "src/main/resources/sql/properties.txt";
         try {
             input = new FileInputStream(pathToDB);
 
@@ -23,8 +23,6 @@ public class JDBCConnection {
             proplist.add(prop.getProperty("database"));
             proplist.add(prop.getProperty("username"));
             proplist.add(prop.getProperty("password"));
-
-            System.out.println("EVERYTHING IS ALRIGHT WITH DB");
             return proplist;
 
         } catch (IOException ex) {

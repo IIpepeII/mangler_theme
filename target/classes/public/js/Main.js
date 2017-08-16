@@ -58,7 +58,7 @@ $(document).ready(function () {
             async: true,
             success: function (resp) {
                 var n = JSON.parse(resp);
-                if(!(n.hasOwnProperty("id"))){
+                if(n == null){
                     getResult();
                     $('#card-image-container').hide();
                 }else {
@@ -137,7 +137,7 @@ $(document).ready(function () {
                 getWordCards();
             },
             error: function () {
-                alert('Problem with function: resultToZero')
+                alert('Problem with function: del_wordcard')
             }
         });
     });
@@ -153,7 +153,7 @@ $(document).ready(function () {
                 getResults();
             },
             error: function () {
-                alert('Problem with function: resultToZero')
+                alert('Problem with function: del_result')
             }
         });
     });
@@ -211,6 +211,8 @@ $(document).ready(function () {
                     "<th>First Name</th>" +
                     "<th>Last Name</th>" +
                     "<th>Result</th>" +
+                    "<th>Start</th>" +
+                    "<th>End</th>" +
                     "<th>Remove</th>" +
                     "</tr>");
                 for (var i = 0; i < n.length; i++) {
@@ -219,12 +221,16 @@ $(document).ready(function () {
                     var firstName = obj["firstName"];
                     var lastName = obj["lastName"];
                     var result = obj["result"];
+                    var startTime = obj["startTime"];
+                    var endTime = obj["endTime"];
                     var delButton = "<button value='" + obj["id"] +  "' type='button' class='del-result-button glyphicon glyphicon-remove-sign'></button>";
                     $("#big-table").append(
                         "<tr><td>" + id + "</td>" +
                         "<td>" + firstName + "</td>" +
                         "<td>" + lastName + "</td>" +
                         "<td>" + result + "%</td>" +
+                        "<td>" + startTime + "</td>" +
+                        "<td>" + endTime + "</td>" +
                         "<td>" + delButton + "</td></tr>"
                     );
                 }
@@ -234,9 +240,4 @@ $(document).ready(function () {
             }
         });
     }
-
-
-
-
-
 });

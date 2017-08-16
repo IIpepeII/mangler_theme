@@ -48,7 +48,7 @@ th {
     border: dashed;
 }
 
-#evaluation-button{
+#evaluation-button, #sign-in-button, #logout-button {
     margin: 20px;
 }
 
@@ -58,4 +58,12 @@ th {
 
 #result-points{
     color: cornflowerblue;
+}
+
+#sign-in-button, #logout-button{
+    margin: 5px 10px 5px 10px;
+}
+
+#sign-in-input{
+    margin: 10px 10px 5px 10px;
 }

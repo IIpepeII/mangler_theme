@@ -29,26 +29,37 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        externalStaticFileLocation("upload");
+
         staticFileLocation("/public");
         File uploadDir = new File("upload");
         uploadDir.mkdir(); // create the upload directory if it doesn't exist
+        externalStaticFileLocation("upload");
         DatabaseController dBase = new DatabaseController();
         exception(Exception.class, (e, req, res) -> e.printStackTrace());
         //port(8888);
         port(getHerokuAssignedPort());
+        String hardCodedAppKey = "123456";
 
         get("/", (req, res) -> {
-            req.session().attribute("user", new Wuser());
-            Map<String, Object> model = new HashMap<>();
-            return new ThymeleafTemplateEngine().render(
-                    new ModelAndView(model, "student")
-            );
+            res.redirect("/student");
+
+            return null;
         });
 
-        get("/student", "multipart/form-data", (req, res) -> {
-            req.session().attribute("user", new Wuser());
+
+        get("/student", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
+            if(req.session().attribute("admin") == null){
+                req.session().attribute("admin", 0);
+                model.put("admin", "false");
+            }else if(req.session().attribute("admin").equals(1)){
+                model.put("admin" , "true");
+            }else{
+                req.session().attribute("admin", 0);
+                model.put("admin", "false");
+            }
+            req.session().attribute("user", new Wuser());
+
             return new ThymeleafTemplateEngine().render(
                     new ModelAndView(model, "student")
             );
@@ -56,17 +67,51 @@ public class Main {
 
         get("/teacher", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
+            if(req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)){
+                res.redirect("/student");
+            }
+            if(req.session().attribute("admin").equals(1)){
+                model.put("admin" , "true");
+            }else{
+                model.put("admin", "false");
+            }
             return new ThymeleafTemplateEngine().render(
                     new ModelAndView(model, "teacher")
             );
         });
 
+        post("/auth_key", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            if(req.queryParams("key").equals(hardCodedAppKey)){
+                req.session().attribute("admin", 1);
+                res.redirect("/teacher");
+                return null;
+            }else {
+                res.redirect("/student");
+                return null;
+            }
+        });
+
         get("/wordcards", (req, res) -> {
+            if(req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)){
+                res.redirect("/student");
+            }
             Gson json = new Gson();
             return json.toJson(dBase.getAllWordCards());
         });
 
+        get("/logout", (req, res) -> {
+            req.session().attribute("admin", 0);
+            Map<String, Object> model = new HashMap<>();
+            res.redirect("/student");
+            return null;
+        });
+
         get("/results", (req, res) -> {
+            if(req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)){
+                res.redirect("/student");
+                return null;
+            }
             Gson json = new Gson();
             return json.toJson(dBase.getAllResults());
         });
@@ -75,6 +120,7 @@ public class Main {
             Gson json = new Gson();
             Wuser wuser = req.session().attribute("user");
             wuser.setResultToZero();
+            wuser.setStartTime();
             wuser.setCurrentCardIndexToZero();
             wuser.setCards(dBase.getExamCards());
             return json.toJson(wuser.getCards());
@@ -85,6 +131,7 @@ public class Main {
             Wuser wuser = req.session().attribute("user");
             wuser.setResultToZero();
             wuser.setCurrentCardIndexToZero();
+            wuser.setStartTime();
             String theme = req.queryParams("theme");
             wuser.setCards(dBase.getCardsByTheme(theme));
             return json.toJson(wuser.getCards());
@@ -94,7 +141,7 @@ public class Main {
             Gson json = new Gson();
             Wuser wuser = req.session().attribute("user");
             if (wuser.isLastIndex()) {
-                return json.toJson("OK");
+                return json.toJson(null);
             }
             return json.toJson(wuser.getCard());
         });
@@ -103,6 +150,7 @@ public class Main {
             String hun = req.queryParams("hun");
             String eng = req.queryParams("eng");
             Wuser wuser = req.session().attribute("user");
+            wuser.setEndTime();
             if(wuser.getCardListSize() == 0){
                 return "OK";
             }
@@ -110,7 +158,7 @@ public class Main {
                 if (wuser.evalCardWithIndexZero(hun, eng)) {
                     wuser.setResult();
                 }
-            } else if (wuser.evalCard(hun, eng)) {
+            } else if(wuser.evalCard(hun, eng)) {
                 wuser.setResult();
             }
             return "OK";
@@ -119,7 +167,7 @@ public class Main {
         get("/result_to_zero", (req, res) -> {
             Wuser wuser = req.session().attribute("user");
             wuser.setResultToZero();
-            return "Ok";
+            return "OK";
         });
 
         get("/get_result", (req, res) -> {
@@ -128,13 +176,18 @@ public class Main {
         });
 
         post("/del_wordcard", (req, res) -> {
+            if(req.session().attribute("admin").equals(0) || req.session().attribute("admin") == null){
+                res.redirect("/student");
+            }
             Integer id = Integer.parseInt(req.queryParams("id"));
             dBase.delWordCard(id);
             return "OK";
         });
 
         post("/del_result", (req, res) -> {
-            System.out.println("segg");
+            if(req.session().attribute("admin").equals(0) || req.session().attribute("admin") == null){
+                res.redirect("/student");
+            }
             Integer id = Integer.parseInt(req.queryParams("id"));
             dBase.delResult(id);
             return "OK";
@@ -150,12 +203,15 @@ public class Main {
             String lastName = req.queryParams("lname");
             Wuser wuser = req.session().attribute("user");
             String result = String.valueOf(wuser.getResult() * 10);
-            dBase.addNewResult(firstName,lastName,result);
+            dBase.addNewResult(firstName,lastName,result,wuser.getStartTime(),wuser.getEndTime());
             res.redirect("/student");
             return "OK";
         });
 
         post("/upload", (req, res) -> {
+            if(req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)){
+                res.redirect("/student");
+            }
             Path tempFile = Files.createTempFile(uploadDir.toPath(), "", ".jpg");
             req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
             try (InputStream input = req.raw().getPart("uploaded_file").getInputStream()) { // getPart needs to use same "name" as input field in form
@@ -172,9 +228,5 @@ public class Main {
             res.redirect("/teacher");
             return "OK";
         });
-
-
-
-
     }
 }

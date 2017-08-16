@@ -51,9 +51,9 @@ public class DatabaseController {
             e.printStackTrace();
         }
     }
-    public void addNewResult(String firstName, String lastName, String result) {
+    public void addNewResult(String firstName, String lastName, String result, String  startTime, String endTime) {
 
-        String insertIntoTable = "INSERT INTO result (first_name, last_name, result) VALUES (?,?,?);";
+        String insertIntoTable = "INSERT INTO result (first_name, last_name, result, start_time, end_time) VALUES (?,?,?,?,?);";
 
         try {
             // Adding record to DB
@@ -61,6 +61,8 @@ public class DatabaseController {
             preparedStatement.setString(1, firstName);
             preparedStatement.setString(2, lastName);
             preparedStatement.setString(3, result);
+            preparedStatement.setString(4, startTime);
+            preparedStatement.setString(5, endTime);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -178,7 +180,9 @@ public class DatabaseController {
                 Result newResult = new Result(result.getInt("id"),
                         result.getString("first_name"),
                         result.getString("last_name"),
-                        result.getInt("result"));
+                        result.getInt("result"),
+                        result.getString("start_time"),
+                        result.getString("end_time"));
                 resultList.add(newResult);
             }
         } catch (SQLException e) {
