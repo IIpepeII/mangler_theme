@@ -25,7 +25,7 @@ $(document).ready(function () {
         });
     });
 
-    $("#get-card").click( function () {
+    $("#get-card").click(function () {
         getCard()
     });
 
@@ -36,7 +36,7 @@ $(document).ready(function () {
             url: "/exercise",
             type: "POST",
             async: true,
-            data:{ theme : theme } ,
+            data: {theme: theme},
             success: function (resp) {
                 getCard();
                 $("#card-image-container").hide();
@@ -51,17 +51,17 @@ $(document).ready(function () {
     function getCard() {
         var hun = $("#hun-student-input").val();
         var eng = $("#eng-student-input").val();
-        evaluate(hun,eng);
+        evaluate(hun, eng);
         $.ajax({
             url: "/getcard",
             type: "GET",
             async: true,
             success: function (resp) {
                 var n = JSON.parse(resp);
-                if(n == null){
+                if (n == null) {
                     getResult();
                     $('#card-image-container').hide();
-                }else {
+                } else {
                     getImage(n);
 
                     $('#card-image-container').removeAttr('style');
@@ -81,18 +81,18 @@ $(document).ready(function () {
             async: true,
             success: function (resp) {
                 $('#card-image').attr("src", resp);
-                },
+            },
             error: function () {
                 alert('Problem with function: getImage')
             }
         });
     }
 
-    function evaluate(hun,eng) {
+    function evaluate(hun, eng) {
         $.ajax({
             url: "/evaluate",
             type: "POST",
-            data: {hun: hun, eng:eng},
+            data: {hun: hun, eng: eng},
             async: true,
             error: function () {
                 alert('Problem with function: evaluate')
@@ -126,12 +126,12 @@ $(document).ready(function () {
         });
     }
 
-    $("#lists").on("click",".del-wordcard-button", function () {
+    $("#lists").on("click", ".del-wordcard-button", function () {
         var ItemIndex = $(this).attr("value");
         $.ajax({
             url: "/del_wordcard",
             type: "POST",
-            data: { id: ItemIndex },
+            data: {id: ItemIndex},
             async: true,
             success: function (resp) {
                 getWordCards();
@@ -142,12 +142,12 @@ $(document).ready(function () {
         });
     });
 
-    $("#lists").on("click",".del-result-button", function () {
+    $("#lists").on("click", ".del-result-button", function () {
         var ItemIndex = $(this).attr("value");
         $.ajax({
             url: "/del_result",
             type: "POST",
-            data: { id: ItemIndex },
+            data: {id: ItemIndex},
             async: true,
             success: function (resp) {
                 getResults();
@@ -181,7 +181,7 @@ $(document).ready(function () {
                     var theme = obj["theme"];
                     var hun = obj["hun"];
                     var eng = obj["eng"];
-                    var delButton = "<button value='" + obj["id"] +  "' type='button' class='del-wordcard-button glyphicon glyphicon-remove-sign'></button>";
+                    var delButton = "<button value='" + obj["id"] + "' type='button' class='del-wordcard-button glyphicon glyphicon-remove-sign'></button>";
                     $("#big-table").append(
                         "<tr><td>" + id + "</td>" +
                         "<td>" + picLoc + "</td>" +
@@ -223,7 +223,7 @@ $(document).ready(function () {
                     var result = obj["result"];
                     var startTime = obj["startTime"];
                     var endTime = obj["endTime"];
-                    var delButton = "<button value='" + obj["id"] +  "' type='button' class='del-result-button glyphicon glyphicon-remove-sign'></button>";
+                    var delButton = "<button value='" + obj["id"] + "' type='button' class='del-result-button glyphicon glyphicon-remove-sign'></button>";
                     $("#big-table").append(
                         "<tr><td>" + id + "</td>" +
                         "<td>" + firstName + "</td>" +

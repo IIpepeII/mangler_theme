@@ -1,35 +1,31 @@
 package controller;
 
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import spark.ModelAndView;
-import spark.Request;
-import spark.Response;
-import spark.template.thymeleaf.ThymeleafTemplateEngine;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import static spark.Spark.halt;
-
+/**
+ * This class responsible for every I/O and service operations for the server.
+ */
 public class Controller {
 
-    public static String getCurrentTime(){
+    /**
+     * This method responsible for always available current time.
+     * @return String current time in format yyyy/MM/dd HH:mm:ss
+     */
+    public static String getCurrentTime() {
         return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
     }
 
-    public static Response deleteFile() {
+    /**
+     * This method responsible for deleting files by the given paths.
+     * @param filePath to file
+     */
+    public static void deleteFile(String filePath) {
 
         try {
             //Example file
-            File file = new File("src/main/resources/public/img/product_1.jpg");
+            File file = new File(filePath);
 
             if (file.delete()) {
                 System.out.println(file.getName() + " is deleted!");
@@ -40,10 +36,7 @@ public class Controller {
         } catch (Exception e) {
 
             e.printStackTrace();
-
         }
-
-return null;
     }
 }
 

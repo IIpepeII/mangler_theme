@@ -2,8 +2,6 @@ package model;
 
 import controller.Controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 public class Wuser {
@@ -15,7 +13,8 @@ public class Wuser {
     private String startTime;
     private String endTime;
 
-    public Wuser(){}
+    public Wuser() {
+    }
 
     public List<WordCard> getCards() {
         return cards;
@@ -26,18 +25,18 @@ public class Wuser {
         this.cardListSize = cards.size();
     }
 
-    public WordCard getCard(){
+    public WordCard getCard() {
         int currentIndex = currentCardIndex;
         currentCardIndex++;
-            return cards.get(currentIndex);
+        return cards.get(currentIndex);
     }
 
-    public boolean evalCard(String hun, String eng){
-        WordCard card = cards.get(currentCardIndex-1);
+    public boolean evalCard(String hun, String eng) {
+        WordCard card = cards.get(currentCardIndex - 1);
         return card.getHun().equals(hun) && card.getEng().equals(eng);
     }
 
-    public boolean  evalCardWithIndexZero(String hun, String eng){
+    public boolean evalCardWithIndexZero(String hun, String eng) {
         WordCard card = cards.get(0);
         return card.getHun().equals(hun) && card.getEng().equals(eng);
     }
@@ -46,7 +45,7 @@ public class Wuser {
         return cardListSize;
     }
 
-    public boolean isLastIndex(){
+    public boolean isLastIndex() {
         return currentCardIndex == cardListSize;
     }
 
@@ -54,15 +53,15 @@ public class Wuser {
         return result;
     }
 
-    public void setResultToZero(){
+    public void setResultToZero() {
         result = 0;
     }
 
-    public void setCurrentCardIndexToZero(){
+    public void setCurrentCardIndexToZero() {
         currentCardIndex = 0;
     }
-    
-    public int getCurrentIndex(){
+
+    public int getCurrentIndex() {
         return currentCardIndex;
     }
 

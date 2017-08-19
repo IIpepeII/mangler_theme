@@ -49,12 +49,12 @@ public class Main {
 
         get("/student", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
-            if(req.session().attribute("admin") == null){
+            if (req.session().attribute("admin") == null) {
                 req.session().attribute("admin", 0);
                 model.put("admin", "false");
-            }else if(req.session().attribute("admin").equals(1)){
-                model.put("admin" , "true");
-            }else{
+            } else if (req.session().attribute("admin").equals(1)) {
+                model.put("admin", "true");
+            } else {
                 req.session().attribute("admin", 0);
                 model.put("admin", "false");
             }
@@ -67,12 +67,11 @@ public class Main {
 
         get("/teacher", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
-            if(req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)){
+            if (req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)) {
                 res.redirect("/student");
-            }
-            if(req.session().attribute("admin").equals(1)){
-                model.put("admin" , "true");
-            }else{
+            } else if (req.session().attribute("admin").equals(1)) {
+                model.put("admin", "true");
+            } else {
                 model.put("admin", "false");
             }
             return new ThymeleafTemplateEngine().render(
@@ -82,18 +81,18 @@ public class Main {
 
         post("/auth_key", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
-            if(req.queryParams("key").equals(hardCodedAppKey)){
+            if (req.queryParams("key").equals(hardCodedAppKey)) {
                 req.session().attribute("admin", 1);
                 res.redirect("/teacher");
                 return null;
-            }else {
+            } else {
                 res.redirect("/student");
                 return null;
             }
         });
 
         get("/wordcards", (req, res) -> {
-            if(req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)){
+            if (req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)) {
                 res.redirect("/student");
             }
             Gson json = new Gson();
@@ -108,7 +107,7 @@ public class Main {
         });
 
         get("/results", (req, res) -> {
-            if(req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)){
+            if (req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)) {
                 res.redirect("/student");
                 return null;
             }
@@ -151,14 +150,13 @@ public class Main {
             String eng = req.queryParams("eng");
             Wuser wuser = req.session().attribute("user");
             wuser.setEndTime();
-            if(wuser.getCardListSize() == 0){
+            if (wuser.getCardListSize() == 0) {
                 return "OK";
-            }
-            else if(wuser.getCurrentIndex() == 0) {
+            } else if (wuser.getCurrentIndex() == 0) {
                 if (wuser.evalCardWithIndexZero(hun, eng)) {
                     wuser.setResult();
                 }
-            } else if(wuser.evalCard(hun, eng)) {
+            } else if (wuser.evalCard(hun, eng)) {
                 wuser.setResult();
             }
             return "OK";
@@ -176,7 +174,7 @@ public class Main {
         });
 
         post("/del_wordcard", (req, res) -> {
-            if(req.session().attribute("admin").equals(0) || req.session().attribute("admin") == null){
+            if (req.session().attribute("admin").equals(0) || req.session().attribute("admin") == null) {
                 res.redirect("/student");
             }
             Integer id = Integer.parseInt(req.queryParams("id"));
@@ -185,7 +183,7 @@ public class Main {
         });
 
         post("/del_result", (req, res) -> {
-            if(req.session().attribute("admin").equals(0) || req.session().attribute("admin") == null){
+            if (req.session().attribute("admin").equals(0) || req.session().attribute("admin") == null) {
                 res.redirect("/student");
             }
             Integer id = Integer.parseInt(req.queryParams("id"));
@@ -203,13 +201,13 @@ public class Main {
             String lastName = req.queryParams("lname");
             Wuser wuser = req.session().attribute("user");
             String result = String.valueOf(wuser.getResult() * 10);
-            dBase.addNewResult(firstName,lastName,result,wuser.getStartTime(),wuser.getEndTime());
+            dBase.addNewResult(firstName, lastName, result, wuser.getStartTime(), wuser.getEndTime());
             res.redirect("/student");
             return "OK";
         });
 
         post("/upload", (req, res) -> {
-            if(req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)){
+            if (req.session().attribute("admin") == null || req.session().attribute("admin").equals(0)) {
                 res.redirect("/student");
             }
             Path tempFile = Files.createTempFile(uploadDir.toPath(), "", ".jpg");

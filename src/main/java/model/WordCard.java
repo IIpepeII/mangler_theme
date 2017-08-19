@@ -8,7 +8,7 @@ public class WordCard {
     private String eng;
     private String hun;
 
-    public WordCard(int id, String picLocation, String theme, String eng, String hun){
+    public WordCard(int id, String picLocation, String theme, String eng, String hun) {
         this.id = id;
         this.picLocation = picLocation;
         this.theme = theme;

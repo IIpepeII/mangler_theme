@@ -3,6 +3,7 @@ th, td {
     border-color: #968dad #968dad;
     text-align: center;
 }
+
 table {
     width: 100%;
 }
@@ -11,40 +12,40 @@ th {
     border-style: dashed !important;
 }
 
-.del-wordcard-button , .del-result-button{
+.del-wordcard-button, .del-result-button {
     width: 100%;
 }
 
-#wordcards{
+#wordcards {
     margin-bottom: 5px;
 }
 
-#exam-jumbo{
+#exam-jumbo {
     text-align: center;
 }
 
-#themes-group, #result-container{
+#themes-group, #result-container {
     margin-left: 50px;
 }
 
-#themes-group{
+#themes-group {
     margin-top: 10px;
 }
 
-#result-container{
+#result-container {
     margin-top: 30px;
 }
 
-#teacher-button-group{
+#teacher-button-group {
     margin-bottom: 30px;
 }
 
-#card-image-container{
+#card-image-container {
     text-align: center;
     margin-top: 100px;
 }
 
-#card-image{
+#card-image {
     border: dashed;
 }
 
@@ -52,18 +53,18 @@ th {
     margin: 20px;
 }
 
-#get-card{
+#get-card {
     margin: 30px;
 }
 
-#result-points{
+#result-points {
     color: cornflowerblue;
 }
 
-#sign-in-button, #logout-button{
+#sign-in-button, #logout-button {
     margin: 5px 10px 5px 10px;
 }
 
-#sign-in-input{
+#sign-in-input {
     margin: 10px 10px 5px 10px;
 }

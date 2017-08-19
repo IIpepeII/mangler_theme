@@ -6,8 +6,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 
+/**
+ * This class responsible for  database connection.
+ */
 public class JDBCConnection {
 
+
+    /**
+     * This method read the properties(database name, username, password)
+     * from the properties.txt file for the correct connection to the database.
+     * @return ArrayList of String objects with the prperties
+     */
     public static ArrayList<String> connectProps() {
         Properties prop = new Properties();
         InputStream input = null;
